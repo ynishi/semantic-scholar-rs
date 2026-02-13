@@ -11,6 +11,7 @@ documentation = "https://docs.rs/semantic-scholar-rs"
 readme = "README.md"
 keywords = ["semantic-scholar", "academic", "papers", "mcp", "api"]
 categories = ["api-bindings", "science"]
+authors = ["Yutaka Nishimura"]
 
 [lib]
 name = "semantic_scholar"
