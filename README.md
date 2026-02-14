@@ -80,7 +80,20 @@ All request builders support `.limit()`, `.offset()`, and `.fields()` for pagina
 
 An [MCP](https://modelcontextprotocol.io/) server is included as an optional binary, exposing all endpoints as LLM-callable tools over stdio.
 
-### Build & Run
+### Installation
+
+```sh
+# Homebrew (macOS/Linux)
+brew install ynishi/semantic-scholar/semantic-scholar-mcp
+
+# Shell script (macOS/Linux)
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/ynishi/semantic-scholar-rs/releases/latest/download/semantic-scholar-rs-installer.sh | sh
+
+# cargo install (requires Rust toolchain)
+cargo install semantic-scholar-rs --features mcp
+```
+
+### Build from Source
 
 ```sh
 cargo build --release --features mcp
