@@ -48,9 +48,9 @@ pub struct Paper {
     #[serde(default)]
     pub authors: Option<Vec<AuthorRef>>,
     #[serde(default)]
-    pub citations: Option<Vec<Citation>>,
+    pub citations: Option<Vec<PaperRef>>,
     #[serde(default)]
-    pub references: Option<Vec<Reference>>,
+    pub references: Option<Vec<PaperRef>>,
     #[serde(default)]
     pub tldr: Option<Tldr>,
 }
@@ -154,6 +154,52 @@ pub struct AuthorRef {
     pub author_id: Option<String>,
     #[serde(default)]
     pub name: Option<String>,
+}
+
+/// Minimal paper reference embedded in `Paper.citations` / `Paper.references`.
+///
+/// `GET /graph/v1/paper/{id}` returns bare Paper objects (subject to the
+/// `fields` query parameter) in the `citations` / `references` arrays, not the
+/// `Citation` / `Reference` shape used by the dedicated citation / reference
+/// endpoints. `paper_id` is optional because unmatched references can come back
+/// with no id.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PaperRef {
+    #[serde(default)]
+    pub paper_id: Option<String>,
+    #[serde(default)]
+    pub corpus_id: Option<u64>,
+    #[serde(default)]
+    pub external_ids: Option<ExternalIds>,
+    #[serde(default)]
+    pub url: Option<String>,
+    #[serde(default)]
+    pub title: Option<String>,
+    #[serde(default, rename = "abstract")]
+    pub abstract_text: Option<String>,
+    #[serde(default)]
+    pub venue: Option<String>,
+    #[serde(default)]
+    pub year: Option<u32>,
+    #[serde(default)]
+    pub reference_count: Option<u32>,
+    #[serde(default)]
+    pub citation_count: Option<u32>,
+    #[serde(default)]
+    pub influential_citation_count: Option<u32>,
+    #[serde(default)]
+    pub is_open_access: Option<bool>,
+    #[serde(default)]
+    pub open_access_pdf: Option<OpenAccessPdf>,
+    #[serde(default)]
+    pub fields_of_study: Option<Vec<String>>,
+    #[serde(default)]
+    pub publication_date: Option<String>,
+    #[serde(default)]
+    pub journal: Option<Journal>,
+    #[serde(default)]
+    pub authors: Option<Vec<AuthorRef>>,
 }
 
 /// A citing paper with citation context.

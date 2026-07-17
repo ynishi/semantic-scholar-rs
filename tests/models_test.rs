@@ -178,6 +178,39 @@ fn deserialize_reference_response() {
 }
 
 #[test]
+fn deserialize_paper_with_embedded_citations_and_references() {
+    // `GET /graph/v1/paper/{id}?fields=citations.title,references.title` returns
+    // bare Paper-like objects in the `citations`/`references` arrays (not the
+    // `Citation`/`Reference` context objects). References with unmatched ids
+    // can return `paperId: null`.
+    let json = r#"{
+        "paperId": "root",
+        "title": "Root Paper",
+        "citations": [
+            {"paperId": "c1", "title": "Citing 1"},
+            {"paperId": "c2", "title": "Citing 2", "year": 2024}
+        ],
+        "references": [
+            {"paperId": "r1", "title": "Ref 1"},
+            {"paperId": null, "title": "Unmatched reference"}
+        ]
+    }"#;
+    let paper: Paper = serde_json::from_str(json).expect("paper with embedded citations");
+
+    let citations = paper.citations.as_ref().expect("citations present");
+    assert_eq!(citations.len(), 2);
+    assert_eq!(citations[0].paper_id.as_deref(), Some("c1"));
+    assert_eq!(citations[1].year, Some(2024));
+
+    let references = paper.references.as_ref().expect("references present");
+    assert_eq!(references.len(), 2);
+    assert_eq!(references[0].paper_id.as_deref(), Some("r1"));
+    // Unmatched reference: paper_id is None but title still parses.
+    assert!(references[1].paper_id.is_none());
+    assert_eq!(references[1].title.as_deref(), Some("Unmatched reference"));
+}
+
+#[test]
 fn deserialize_recommendation_response() {
     let json = r#"{
         "recommendedPapers": [
